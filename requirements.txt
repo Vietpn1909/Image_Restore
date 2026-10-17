@@ -1,0 +1,39 @@
+# ============== Core ==============
+torch>=2.1.0
+torchvision>=0.16.0
+numpy>=1.24.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+scikit-image>=0.22.0
+
+# ============== Pretrained models ==============
+basicsr>=1.4.2
+facexlib>=0.3.0
+gfpgan>=1.3.8
+realesrgan>=0.3.0
+
+# ============== Transformer ==============
+einops>=0.7.0
+timm>=0.9.0
+
+# ============== Face / identity ==============
+mediapipe>=0.10.0
+insightface>=0.7.3
+onnxruntime-gpu>=1.16.0
+
+# ============== Metrics ==============
+lpips>=0.1.4
+pytorch-fid>=0.3.0
+pyiqa>=0.1.10
+
+# ============== Training ==============
+pyyaml>=6.0
+tqdm>=4.66.0
+tensorboard>=2.15.0
+wandb>=0.16.0
+
+# ============== Data (chỉ cho ảnh VN thật) ==============
+gallery-dl>=1.26.0       # tải ảnh từ Flickr public không cần API
+
+# ============== Demo ==============
+gradio>=4.0.0

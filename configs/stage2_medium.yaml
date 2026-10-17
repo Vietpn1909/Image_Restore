@@ -1,0 +1,75 @@
+# ============================================================
+# STAGE 2 — MEDIUM
+# Unfreeze N block cuối, bật Transformer fusion, bật GAN
+# Degradation: MEDIUM
+# ============================================================
+
+stage: 2
+name: "stage2_medium"
+
+data:
+  hq_dirs:
+    - "data/hq_train/ffhq"
+    - "data/hq_train/asian_face"   # thêm Asian dataset từ stage 2
+  val_dir: "data/test_synthetic"
+  image_size: 512
+  batch_size: 6
+  num_workers: 4
+  degradation_level: "medium"
+  use_real_vn: false
+
+model:
+  real_esrgan:
+    pretrained: "checkpoints/stage1/best.pth"
+    freeze_backbone: false
+    unfreeze_strategy: "last_n_blocks"
+    unfreeze_n: 4
+  gfpgan:
+    pretrained: "checkpoints/stage1/best.pth"
+    freeze_backbone: false
+    unfreeze_strategy: "last_n_blocks"
+    unfreeze_n: 6
+  degradation_encoder:
+    enable: true
+    out_dim: 8
+    inject_via: "film"
+  transformer_fusion:
+    enable: true
+    num_blocks: 2
+    num_heads: 8
+    dim: 64
+
+optim:
+  type: "adamw"
+  lr: 1.0e-4
+  betas: [0.9, 0.999]
+  weight_decay: 1.0e-4
+  scheduler:
+    type: "cosine"
+    warmup_iters: 500
+    total_iters: 40000
+
+loss:
+  pixel_l1: {enable: true, weight: 1.0}
+  perceptual_vgg: {enable: true, weight: 1.0}
+  adversarial: {enable: true, weight: 0.1, gan_type: "lsgan"}
+  identity_arcface: {enable: true, weight: 0.5}
+  degradation_supervised: {enable: true, weight: 0.5}
+  adaptive_weighting: {enable: true}
+
+train:
+  total_iters: 40000
+  val_every: 2000
+  save_every: 5000
+  log_every: 100
+  resume: null
+  seed: 42
+  mixed_precision: true
+
+log:
+  output_dir: "checkpoints/stage2"
+  tensorboard_dir: "results/tensorboard/stage2"
+  wandb:
+    enable: true
+    project: "vn-old-portrait"
+    run_name: "stage2_medium"

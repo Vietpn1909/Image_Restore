@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtualenv
+venv/
+.venv/
+env/
+
+# Data — never commit
+data/hq_train/
+data/real_vn_old/
+data/test_synthetic/
+data/degradation_assets/**/*.png
+data/degradation_assets/**/*.jpg
+
+# Model weights
+checkpoints/**/*.pth
+checkpoints/**/*.pt
+checkpoints/**/*.ckpt
+checkpoints/**/*.bin
+checkpoints/**/*.safetensors
+
+# Logs
+results/tensorboard/
+results/comparisons/
+results/metrics/*.csv
+results/metrics/*.json
+wandb/
+runs/
+
+# Secrets
+.env
+*.kaggle/
+kaggle.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+gfpgan/weights/
+*.exe
+*.pth

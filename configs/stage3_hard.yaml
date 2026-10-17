@@ -1,0 +1,94 @@
+# ============================================================
+# STAGE 3 — HARD FINE-TUNING (5 cải tiến)
+# ============================================================
+# Bám sát thiết kế Ch3 + 5 cải tiến tăng khả thi:
+#   1. Mix source dataset: 50% UTKFace Asian + 50% FFHQ subset
+#   2. Mix degradation: 70% hard + 30% medium (anti-shock)
+#   3. EMA weights (decay 0.999) cho Generator
+#   4. R1 gradient penalty cho Discriminator (lazy, every 16 step)
+#   5. Save every 500 iter (10 candidates)
+# ============================================================
+
+stage: 3
+name: "stage3_hard"
+
+data:
+  # 2 nguồn ảnh — mix 50/50 (anti catastrophic forgetting)
+  asian_dir: ""                     # OVERRIDE notebook (UTKFace race=2 filtered)
+  ffhq_dir: ""                      # OVERRIDE notebook (FFHQ)
+  ffhq_max_samples: 10000           # Subsample FFHQ để không quá nhiều
+  val_dir: ""                       # OVERRIDE notebook (CelebA-HQ)
+  
+  ratio_asian: 0.5                  # 50% UTKFace Asian, 50% FFHQ
+  ratio_hard: 0.7                   # 70% hard, 30% medium (anti-shock)
+  
+  image_size: 256
+  batch_size: 2
+  num_workers: 2
+  
+  # 2 val sets riêng
+  val_degradation_levels: ["medium", "hard"]
+  val_max_samples: 150
+
+model:
+  real_esrgan:
+    pretrained: ""                  # OVERRIDE
+    unfreeze_n: 23                  # Full unfreeze all RRDB
+  gfpgan:
+    pretrained: ""                  # OVERRIDE
+    unfreeze_strategy: "full"       # "full" hoặc "last_n" (fallback OOM)
+    unfreeze_n: 8
+  degradation_encoder:
+    enable: true
+    out_dim: 8
+  transformer_fusion:
+    enable: true
+    num_blocks: 4                   # Stage 2: 2 → Stage 3: 4
+    num_heads: 8
+    dim: 64
+
+  stage2_checkpoint: ""             # OVERRIDE
+  fusion_expansion_strategy: "copy"
+
+optim:
+  type: "adamw"
+  lr: 5.0e-5                        # backbone full unfreeze
+  lr_deg_encoder: 2.0e-5
+  lr_new: 1.0e-4                    # fusion (2 blocks mới)
+  lr_d: 5.0e-5
+  betas: [0.9, 0.999]
+  weight_decay: 1.0e-4
+  scheduler:
+    warmup_iters: 200
+    total_iters: 5000
+
+loss:
+  pixel_l1: {enable: true, weight: 1.0}
+  perceptual_vgg: {enable: true, weight: 1.0}
+  identity_arcface: {enable: true, weight: 0.7}
+  adversarial: {enable: true, weight: 0.05, gan_type: "lsgan"}
+  degradation_supervised: {enable: true, weight: 0.3}
+  # MỚI: R1 gradient penalty
+  r1_penalty:
+    enable: true
+    weight: 10.0
+    every_n_steps: 16               # Lazy regularization (StyleGAN2 style)
+
+train:
+  total_iters: 5000
+  save_every: 500                   # MỚI: dày hơn (1000 → 500)
+  val_every: 500
+  log_every: 100
+  mixed_precision: true
+  seed: 42
+  freeze_d_first_iters: 500
+  # MỚI: EMA
+  ema:
+    enable: true
+    decay: 0.999
+
+log:
+  output_dir: "/kaggle/working/checkpoints/stage3"
+  tensorboard_dir: "/kaggle/working/tensorboard/stage3"
+  wandb:
+    enable: false

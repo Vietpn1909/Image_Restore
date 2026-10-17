@@ -1,0 +1,28 @@
+# ============================================================
+# INFERENCE CONFIG
+# ============================================================
+
+model:
+  checkpoint: "checkpoints/stage3/best.pth"
+  device: "cuda"
+  fp16: true
+
+face_detection:
+  detector: "retinaface"
+  upscale_factor: 1
+  min_face_size: 64
+  align: true
+
+restoration:
+  bg_tile: 400
+  bg_tile_pad: 10
+  face_size: 512
+  background_enhance: true
+  face_enhance: true
+  fusion_mode: "transformer"      # "transformer" | "alpha_blend"
+
+output:
+  save_intermediate: false
+  save_comparison: true
+  output_format: "png"
+  jpeg_quality: 95

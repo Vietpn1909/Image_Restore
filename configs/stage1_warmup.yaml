@@ -1,0 +1,71 @@
+# ============================================================
+# STAGE 1 — WARMUP
+# Freeze backbone, chỉ train Degradation Encoder + FiLM adapters
+# Degradation: LIGHT
+# Loss: pixel + perceptual + identity (no GAN)
+# ============================================================
+
+stage: 1
+name: "stage1_warmup"
+
+data:
+  hq_dirs:
+    - "data/hq_train/ffhq"       # path khi chạy local
+    # Trên Kaggle: thay bằng "/kaggle/input/<dataset_slug>/<folder>"
+  val_dir: "data/test_synthetic"
+  image_size: 512
+  batch_size: 8
+  num_workers: 4
+  degradation_level: "light"
+  use_real_vn: false             # stage 1 không dùng ảnh thật
+
+model:
+  real_esrgan:
+    pretrained: "checkpoints/pretrained/RealESRGAN_x4plus.pth"
+    freeze_backbone: true
+    train_adapter_only: true
+  gfpgan:
+    pretrained: "checkpoints/pretrained/GFPGANv1.4.pth"
+    freeze_backbone: true
+    train_adapter_only: true
+  degradation_encoder:
+    enable: true
+    out_dim: 8
+    inject_via: "film"
+  transformer_fusion:
+    enable: false
+
+optim:
+  type: "adamw"
+  lr: 2.0e-4
+  betas: [0.9, 0.999]
+  weight_decay: 1.0e-4
+  scheduler:
+    type: "cosine"
+    warmup_iters: 1000
+    total_iters: 30000
+
+loss:
+  pixel_l1: {enable: true, weight: 1.0}
+  perceptual_vgg: {enable: true, weight: 0.5}
+  adversarial: {enable: false}
+  identity_arcface: {enable: true, weight: 0.2}
+  degradation_supervised: {enable: true, weight: 1.0}  # MSE giữa pred & GT vector
+  adaptive_weighting: {enable: false}
+
+train:
+  total_iters: 30000
+  val_every: 2000
+  save_every: 5000
+  log_every: 100
+  resume: null
+  seed: 42
+  mixed_precision: true
+
+log:
+  output_dir: "checkpoints/stage1"
+  tensorboard_dir: "results/tensorboard/stage1"
+  wandb:
+    enable: true
+    project: "vn-old-portrait"
+    run_name: "stage1_warmup"
