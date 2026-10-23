@@ -1,0 +1,20 @@
+% Bảng đánh giá định lượng Stage 2 vs Stage 3
+% Auto-generated từ evaluate_pipeline.py
+\begin{table}[h]
+\centering
+\caption{So sánh định lượng Stage 2 và Stage 3 trên CelebA-HQ test set, đánh giá tại hai mức suy giảm. PSNR/SSIM/ID càng cao càng tốt, LPIPS càng thấp càng tốt.}
+\label{tab:eval_stage2_vs_stage3}
+\begin{tabular}{llcccc}
+\toprule
+Mức suy giảm & Phương pháp & PSNR $\uparrow$ & SSIM $\uparrow$ & LPIPS $\downarrow$ & ID-sim $\uparrow$ \\
+\midrule
+Medium & LQ (input) & 26.82 & 0.7828 & 0.3200 & 0.8932 \\
+ & Stage 2 & 27.24 & 0.8135 & 0.1137 & 0.9419 \\
+ & Stage 3 & 28.74 & 0.8380 & 0.0991 & 0.9517 \\
+\midrule
+Hard & LQ (input) & 22.48 & 0.6630 & 0.4616 & 0.7221 \\
+ & Stage 2 & 23.90 & 0.7274 & 0.2023 & 0.8493 \\
+ & Stage 3 & 26.23 & 0.7685 & 0.1494 & 0.8768 \\
+\bottomrule
+\end{tabular}
+\end{table}

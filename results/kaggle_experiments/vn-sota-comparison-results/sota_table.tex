@@ -1,0 +1,21 @@
+% So sánh SOTA — auto-generated từ sota_comparison.py
+\begin{table}[h]
+\centering
+\caption{So sánh phương pháp đề xuất (Stage 3) với hai phương pháp SOTA GFPGAN v1.4 và CodeFormer trên 200 ảnh CelebA-HQ test, đánh giá tại hai mức suy giảm theo Vietnam Degradation Pipeline. Tất cả output đã đưa về kích thước $256{\times}256$ để so sánh đồng nhất. PSNR/SSIM/ID-sim càng cao càng tốt, LPIPS càng thấp càng tốt.}
+\label{tab:sota_comparison}
+\begin{tabular}{llcccc}
+\toprule
+Mức suy giảm & Phương pháp & PSNR $\uparrow$ & SSIM $\uparrow$ & LPIPS $\downarrow$ & ID-sim $\uparrow$ \\
+\midrule
+Medium & LQ (đầu vào) & 26.36 & 0.7771 & 0.3264 & 0.8795 \\
+ & GFPGAN v1.4 & 25.86 & 0.8002 & 0.1422 & 0.8945 \\
+ & CodeFormer ($w=0.5$) & 25.35 & 0.7699 & 0.1452 & 0.8677 \\
+ & \textbf{Stage 3 (đề xuất)} & 28.64 & 0.8341 & 0.1004 & 0.9465 \\
+\midrule
+Hard & LQ (đầu vào) & 22.38 & 0.6801 & 0.4563 & 0.7450 \\
+ & GFPGAN v1.4 & 22.21 & 0.7213 & 0.2365 & 0.8061 \\
+ & CodeFormer ($w=0.5$) & 21.92 & 0.6953 & 0.2488 & 0.7832 \\
+ & \textbf{Stage 3 (đề xuất)} & 26.11 & 0.7735 & 0.1469 & 0.8884 \\
+\bottomrule
+\end{tabular}
+\end{table}

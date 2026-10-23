@@ -11,39 +11,60 @@ venv/
 .venv/
 env/
 
-# Data — never commit
-data/hq_train/
-data/real_vn_old/
-data/test_synthetic/
-data/degradation_assets/**/*.png
-data/degradation_assets/**/*.jpg
+# Data — never commit (chỉ giữ README hướng dẫn tải)
+data/*
+!data/README.md
 
-# Model weights
-checkpoints/**/*.pth
-checkpoints/**/*.pt
-checkpoints/**/*.ckpt
-checkpoints/**/*.bin
-checkpoints/**/*.safetensors
+# Checkpoints — tải từ Kaggle (chỉ giữ README hướng dẫn tải)
+checkpoints/*
+!checkpoints/README.md
+
+# Model weights ở bất kỳ đâu
+*.pth
+*.pt
+*.ckpt
+*.bin
+*.safetensors
+*.onnx
+gfpgan/weights/
+
+# Bản lưu cũ tải từ Kaggle (code cũ, CycleGAN, horse2zebra)
+kaggle_archive/
+
+# Results — chỉ giữ bảng số liệu, ảnh lưới so sánh và script đã chạy ra kết quả
+results/*
+!results/kaggle_experiments/
+results/kaggle_experiments/*/*
+!results/kaggle_experiments/*/*.csv
+!results/kaggle_experiments/*/*.tex
+!results/kaggle_experiments/*/*.py
+!results/kaggle_experiments/*/qualitative*.png
 
 # Logs
-results/tensorboard/
-results/comparisons/
-results/metrics/*.csv
-results/metrics/*.json
 wandb/
 runs/
+*.tfevents.*
+events.out.tfevents.*
+
+# Gradio (cache + certificate tự sinh)
+.gradio/
+flagged/
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.7z
 
 # Secrets
 .env
 *.kaggle/
 kaggle.json
 
-# IDE
+# IDE / OS
 .vscode/
 .idea/
 *.swp
 .DS_Store
 Thumbs.db
-gfpgan/weights/
 *.exe
-*.pth

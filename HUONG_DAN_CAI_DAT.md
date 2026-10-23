@@ -10,19 +10,30 @@ phục chế ảnh chân dung cũ trên máy cá nhân.
 - **CPU**: Intel Core i5 (gen 8+) hoặc tương đương.
 - **RAM**: 8 GB.
 - **Ổ cứng**: 5 GB trống cho mô hình và môi trường.
-- **GPU (tùy chọn nhưng khuyến nghị)**: NVIDIA với $\geq 4$ GB VRAM, hỗ trợ CUDA 11.8.
+- **GPU (tùy chọn nhưng khuyến nghị)**: NVIDIA với $\geq 4$ GB VRAM.
 
 ### Phần cứng khuyến nghị
 
 - **GPU**: NVIDIA T4 / RTX 2060 / RTX 3060 trở lên, $\geq 8$ GB VRAM.
+- Đã kiểm chứng trên RTX 5070 Ti 16 GB (Windows 11).
 
 ### Phần mềm
 
 - **Hệ điều hành**: Windows 10/11, Ubuntu 20.04+, macOS 12+.
-- **Python**: 3.10 hoặc 3.11.
-- **CUDA Toolkit** (nếu có GPU NVIDIA): 11.8 hoặc 12.1.
+- **Python**: 3.11 (basicsr 1.4.2 và gfpgan chưa chạy được trên Python 3.13).
+- **Driver NVIDIA**: hỗ trợ CUDA 12.8 trở lên (GPU RTX 50 bắt buộc dùng torch $\geq 2.7$ bản cu128).
 
 ## 2. Cài đặt môi trường
+
+### Cách nhanh (Windows) — một lệnh
+
+```bat
+setup_env.bat
+```
+
+Script tạo `venv` bằng Python 3.11, cài torch 2.11 + CUDA 12.8, cài basicsr đúng cách,
+cài `requirements.txt` rồi vá lỗi import của basicsr. Chạy `setup_env.bat --force` để
+xóa và tạo lại venv. Xong thì chuyển sang Mục 3. Các bước 2–5 dưới đây là cách cài thủ công.
 
 
 ### Bước 2 — Tạo môi trường ảo Python
@@ -46,21 +57,24 @@ source venv/bin/activate
 
 ### Bước 3 — Cài PyTorch
 
-**Có GPU NVIDIA** (CUDA 11.8):
+**Có GPU NVIDIA** (CUDA 12.8, chạy được cả RTX 50):
 
 ```bash
-pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
+pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
 ```
 
 **Chỉ CPU** (chạy chậm hơn nhiều, không khuyến nghị cho demo):
 
 ```bash
-pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cpu
+pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cpu
 ```
 
 ### Bước 4 — Cài các package phụ thuộc còn lại
 
+`setup.py` của basicsr import torch, nên phải cài nó trước với `--no-build-isolation`:
+
 ```bash
+pip install --no-build-isolation basicsr==1.4.2
 pip install -r requirements.txt
 ```
 
@@ -113,7 +127,11 @@ checkpoints/
 
 ### Cách 1 — Demo qua giao diện web Gradio (khuyến nghị)
 
+Trên Windows, chạy `run_demo.bat` (tự mở trình duyệt). Dùng `run_demo.bat public` nếu cần
+thêm link public qua Cloudflare (cần cài `cloudflared`). Hoặc chạy thủ công:
+
 ```bash
+# Windows cần PYTHONUTF8=1, nếu không script lỗi khi in ký tự tiếng Việt / "✓"
 python scripts/demo_gradio.py
 ```
 

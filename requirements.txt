@@ -1,39 +1,45 @@
+# ============================================================
+# Đã kiểm chứng: Windows 11, Python 3.11, RTX 5070 Ti (CUDA 12.8)
+# Cài bằng setup_env.bat — đúng thứ tự: torch → basicsr → file này → vá basicsr
+# torch KHÔNG nằm ở đây vì cần index CUDA riêng:
+#   pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
+# ============================================================
+
 # ============== Core ==============
-torch>=2.1.0
-torchvision>=0.16.0
-numpy>=1.24.0
-opencv-python>=4.8.0
+numpy==1.26.4                       # mediapipe 0.10.21 cần numpy<2
+opencv-python==4.10.0.84            # 3 bản opencv phải cùng phiên bản (pyiqa kéo headless,
+opencv-python-headless==4.10.0.84   # mediapipe kéo contrib) — lệch bản là ghi đè cv2 lẫn nhau
+opencv-contrib-python==4.10.0.84
 Pillow>=10.0.0
-scikit-image>=0.22.0
+scikit-image>=0.22.0,<0.26
+protobuf>=4.25,<5                   # mediapipe 0.10.21 cần protobuf<5
 
 # ============== Pretrained models ==============
-basicsr>=1.4.2
-facexlib>=0.3.0
-gfpgan>=1.3.8
-realesrgan>=0.3.0
+basicsr==1.4.2                      # cài trước bằng --no-build-isolation, sau đó vá functional_tensor
+facexlib==0.3.0
+gfpgan==1.3.8
+realesrgan==0.3.0
 
 # ============== Transformer ==============
 einops>=0.7.0
-timm>=0.9.0
 
-# ============== Face / identity ==============
-mediapipe>=0.10.0
-insightface>=0.7.3
-onnxruntime-gpu>=1.16.0
+# ============== Face ==============
+mediapipe==0.10.21                  # src/utils/filter_helper.py dùng mp.solutions (đã bị bỏ từ 0.10.30)
 
 # ============== Metrics ==============
-lpips>=0.1.4
-pytorch-fid>=0.3.0
-pyiqa>=0.1.10
+lpips==0.1.4
+pytorch-fid==0.3.0
+pyiqa==0.1.16
 
 # ============== Training ==============
 pyyaml>=6.0
 tqdm>=4.66.0
-tensorboard>=2.15.0
-wandb>=0.16.0
+tensorboard>=2.15,<2.19             # bản mới hơn cần protobuf>=6
+wandb>=0.16,<0.20                   # bản mới hơn cần protobuf>=5
 
-# ============== Data (chỉ cho ảnh VN thật) ==============
-gallery-dl>=1.26.0       # tải ảnh từ Flickr public không cần API
+# ============== Data ==============
+gallery-dl>=1.26.0                  # tải ảnh từ Flickr public không cần API
+kaggle>=1.6                         # tải dataset/checkpoint từ Kaggle
 
 # ============== Demo ==============
-gradio>=4.0.0
+gradio>=5,<6                        # demo dùng show_download_button, đã bị bỏ ở Gradio 6
